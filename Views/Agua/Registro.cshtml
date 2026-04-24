@@ -1,9 +1,13 @@
 ﻿@model AppFacturas.Models.Agua
 
+@{
+    ViewData["Title"] = "Registro de Agua";
+}
+
 <div class="container mt-4">
     <h2 class="text-center mb-4 text-primary"><i class="bi bi-droplet-fill"></i> Registro de Factura de Agua</h2>
 
-    <form asp-action="ProcesarAgua" method="post" class="shadow p-4 rounded bg-light">
+    <form asp-controller="Agua" asp-action="Resultado" method="post" class="shadow p-4 rounded bg-light">
 
         <div class="card mb-4 border-dark">
             <div class="card-header bg-dark text-white">
