@@ -33,4 +33,4 @@ Este proyecto me permitió profundizar en el funcionamiento interno del **Pipeli
 
 1. Clonar el repositorio:
    ```bash
-   git clone [https://github.com/NicolasRojas1/GestorFacturas-NET.git](https://github.com/NicolasRojas1/GestorFacturas-NET.git)
+   git clone [https://github.com/NicolasRojas1/GestorFacturas-NET.git]
