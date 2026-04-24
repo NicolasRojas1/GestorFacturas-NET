@@ -1,0 +1,74 @@
+﻿@model AppFacturas.Models.Gas
+
+@{
+    ViewData["Title"] = "Registro de Gas";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">🔥 Nuevo Registro: Gas Natural</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="ProcesarGas" method="post" class="p-4 border rounded bg-light">
+                <h3 class="mb-4">Registro de Gas Natural</h3>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Valor total del recibo ($):</label>
+                        <input type="number" step="0.01" class="form-control" asp-for="ValorRecibo" required />
+                        <span asp-validation-for="ValorRecibo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cargo Fijo ($):</label>
+                        <input type="number" step="0.01" class="form-control" asp-for="CargoFijo" required />
+                        <span asp-validation-for="CargoFijo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Lectura Inicial Recibo:</label>
+                        <input type="number" class="form-control" asp-for="LecturaInicialRecibo" required />
+                        <span asp-validation-for="LecturaInicialRecibo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Lectura Final Recibo:</label>
+                        <input type="number" class="form-control" asp-for="LecturaFinalRecibo" required />
+                        <span asp-validation-for="LecturaFinalRecibo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Consumo Inicial Contador:</label>
+                        <input type="number" class="form-control" asp-for="ConsumoInicial" required />
+                        <span asp-validation-for="ConsumoInicial" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Consumo Final Contador:</label>
+                        <input type="number" class="form-control" asp-for="ConsumoFinal" required />
+                        <span asp-validation-for="ConsumoFinal" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Fecha Inicio Periodo:</label>
+                        <input type="date" class="form-control" asp-for="FechaInicial" required />
+                        <span asp-validation-for="FechaInicial" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Fecha Fin Periodo:</label>
+                        <input type="date" class="form-control" asp-for="FechaFinal" required />
+                        <span asp-validation-for="FechaFinal" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-calculator"></i> Procesar Cálculos
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

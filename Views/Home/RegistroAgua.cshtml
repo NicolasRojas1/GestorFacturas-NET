@@ -1,0 +1,129 @@
+﻿@model AppFacturas.Models.Agua
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4 text-primary"><i class="bi bi-droplet-fill"></i> Registro de Factura de Agua</h2>
+
+    <form asp-action="ProcesarAgua" method="post" class="shadow p-4 rounded bg-light">
+
+        <div class="card mb-4 border-dark">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">1. Información General del Recibo</h5>
+            </div>
+            <div class="card-body row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Valor Total Recibo ($)</label>
+                    <input type="number" asp-for="ValorRecibo" class="form-control" step="0.01" required />
+                    <span asp-validation-for="ValorRecibo" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Lectura Inicial General</label>
+                    <input type="number" asp-for="LecturaInicialRecibo" class="form-control" required />
+                    <span asp-validation-for="LecturaInicialRecibo" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Lectura Final General</label>
+                    <input type="number" asp-for="LecturaFinalRecibo" class="form-control" required />
+                    <span asp-validation-for="LecturaFinalRecibo" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Inicial</label>
+                    <input type="date" asp-for="FechaInicial" class="form-control" required />
+                    <span asp-validation-for="FechaInicial" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Final</label>
+                    <input type="date" asp-for="FechaFinal" class="form-control" required />
+                    <span asp-validation-for="FechaFinal" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-dark">
+                <h5 class="mb-0">2. Desglose de Conceptos</h5>
+            </div>
+            <div class="card-body row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Acueducto ($)</label>
+                    <input type="number" asp-for="ValorAcueducto" class="form-control" step="0.01" required />
+                    <span asp-validation-for="ValorAcueducto" class="text-danger"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Alcantarillado ($)</label>
+                    <input type="number" asp-for="ValorAlcantarillado" class="form-control" step="0.01" required />
+                    <span asp-validation-for="ValorAlcantarillado" class="text-danger"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Otros / Propietario ($)</label>
+                    <input type="number" asp-for="OtroCobro" class="form-control" step="0.01" value="0" />
+                    <span asp-validation-for="OtroCobro" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 border-primary shadow-sm">
+            <div class="card-body bg-light">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5 class="text-primary mb-1">3. Distribución por Apartamentos</h5>
+                        <p class="text-muted small mb-0">Indica cuántos apartamentos tienen medidor interno.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" id="numAptos" name="NumeroApartamentos"
+                               class="form-control form-control-lg border-primary"
+                               min="1" max="10" placeholder="¿Cuántos?" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="seccionApartamentos" class="row">
+        </div>
+
+        <div class="text-center mt-4 mb-5">
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                <i class="bi bi-calculator"></i> Calcular Distribución de Agua
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('numAptos').addEventListener('input', function() {
+            const cantidad = parseInt(this.value);
+            const contenedor = document.getElementById('seccionApartamentos');
+            contenedor.innerHTML = '';
+
+            if(isNaN(cantidad) || cantidad <= 0) return;
+
+            for (let i = 0; i < cantidad; i++) {
+                contenedor.innerHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-secondary shadow-sm">
+                            <div class="card-header bg-secondary text-white py-1">
+                                <span class="small">Apartamento ${i + 1}</span>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <label class="x-small">Inicial</label>
+                                        <input name="ListaAptos[${i}].PrimeraLectura" type="number" class="form-control form-control-sm" required />                                      
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="x-small">Intermedia</label>
+                                        <input name="ListaAptos[${i}].SegundaLectura" type="number" class="form-control form-control-sm" required />
+                                    </div> 
+                                    <div class="col-4">
+                                        <label class="x-small">Final</label>
+                                        <input name="ListaAptos[${i}].TerceraLectura" type="number" class="form-control form-control-sm" required />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>`;
+            }
+        });
+    </script>
+}

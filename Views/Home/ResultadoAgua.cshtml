@@ -1,0 +1,103 @@
+﻿@model AppFacturas.Models.Agua
+
+@{
+    ViewData["Title"] = "Resultado Agua";
+    decimal vUnitAcue = Model.CalcularMetroPorConcepto(Model.ValorAcueducto);
+    decimal vUnitAlcan = Model.CalcularMetroPorConcepto(Model.ValorAlcantarillado);
+    decimal consumoTotalRegistrado = Model.LecturaFinalRecibo - Model.LecturaInicialRecibo;
+    int totalConsumo = Model.ListaAptos.Sum(a => a.CosumoReal);
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header recibo-agua-header text-center py-4">
+            <h2 class="fw-bold mb-0">💧 RESUMEN DE FACTURACIÓN - AGUA</h2>
+            <small class="text-uppercase fw-bold opacity-75">Servicio de Acueducto y Alcantarillado</small>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <h5 class="text-secondary border-bottom pb-2">Información del Periodo</h5>
+                    <div class="row mt-3">
+                        <div class="col-6 text-muted">Fechas:</div>
+                        <div class="col-6 fw-bold">@Model.FechaInicial.ToShortDateString() - @Model.FechaFinal.ToShortDateString()</div>
+
+                        <div class="col-6 text-muted">Valor Total Recibo:</div>
+                        <div class="col-6 fw-bold text-dark">@Model.ValorRecibo.ToString("C0")</div>
+
+                        <div class="col-6 text-muted">Apartamentos:</div>
+                        <div class="col-6 fw-bold">@Model.ListaAptos.Count unidades</div>
+                    </div>
+                </div>
+                <div class="col-md-5 text-center border-start">
+                    <span class="badge bg-primary text-white mb-2">CONSUMO REGISTRADO</span>
+                    <h1 class="display-3 fw-bold recibo-consumo-agua">@totalConsumo<small class="h4"> m³</small></h1>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <h5 class="text-secondary mb-4 text-center">Distribución de Consumo</h5>
+            <div class="row g-4">
+                @for (int i = 0; i < Model.ListaAptos.Count; i++)
+                {
+                    var apto = Model.ListaAptos[i];
+                    decimal subAcue = apto.CosumoReal * vUnitAcue;
+                    decimal subAlcan = apto.CosumoReal * vUnitAlcan;
+                    decimal totalPagar = subAcue + subAlcan;
+                    decimal promedio = (consumoTotalRegistrado > 0) ? (apto.CosumoReal / consumoTotalRegistrado) * 100 : 0;
+
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light shadow-sm h-100">
+                            <div class="card-body p-3">
+                                <h5 class="recibo-agua-titulo text-center">Apartamento @(i + 1)</h5>
+
+                                <div class="d-flex justify-content-between mb-2 mt-2">
+                                    <span class="text-muted">Consumo:</span>
+                                    <span class="fw-bold">@apto.CosumoReal m³</span>
+                                </div>
+
+                                <div class="small text-muted mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Acueducto:</span>
+                                        <span>@subAcue.ToString("C0")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Alcantarillado:</span>
+                                        <span>@subAlcan.ToString("C0")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-top pt-1 mt-1" style="font-size: 0.8rem;">
+                                        <span>Participación:</span>
+                                        <span>@promedio.ToString("F1")%</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-center recibo-agua-box">
+                                    <span class="d-block small text-muted fw-bold">TOTAL A PAGAR</span>
+                                    <span class="h4 mb-0 fw-bolder text-dark">@totalPagar.ToString("C0")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.OtroCobro > 0)
+            {
+                <div class="alert alert-info mt-4 border-0 shadow-sm d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-info-circle-fill"></i> <strong>Cobros Adicionales (Referencia Propietario):</strong></span>
+                    <span class="h5 mb-0">@Model.OtroCobro.ToString("C0")</span>
+                </div>
+            }
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center pb-4">
+            <a asp-action="Index" class="btn btn-outline-secondary px-4 me-2">Volver</a>
+            <button class="btn btn-primary fw-bold px-4" onclick="window.print()">
+                <i class="bi bi-printer-fill"></i> Imprimir Reporte
+            </button>
+        </div>
+    </div>
+</div>

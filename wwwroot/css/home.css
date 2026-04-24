@@ -1,0 +1,83 @@
+﻿:root {
+
+    /* Colores de Marca */
+    --color-neutral: #6c757d;
+    --color-agua: #007bff;
+    --color-gas: #198754;
+    --color-luz: #ffc107;
+    --color-white: #ffffff;
+    --color-text-dark: #495057;
+    --color-border: #dee2e6;
+
+    /* Medidas y Bordes */
+    --card-max-width: 28rem;
+    --card-radius: 25px;
+    --btn-radius: 15px;
+    --padding-header: 2rem;
+
+    /* Transiciones */
+    --transition-fast: 0.3s ease;
+    --transition-normal: 0.4s ease;
+}
+
+/* Bloque Principal */
+.card-factura {
+    width: 100%;
+    max-width: var(--card-max-width);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background-color: var(--color-white);
+    transition: var(--transition-normal);
+    border: 2px solid transparent !important;
+}
+
+/* Elemento: Encabezado */
+.card-factura__header {
+    padding: var(--padding-header);
+    background-color: var(--color-neutral);
+    transition: background-color var(--transition-normal);
+    position: relative;
+    text-align: center;
+}
+
+/* Elemento: Botón Personalizado */
+.card-factura .btn-custom {
+    border: 2px solid var(--color-border);
+    border-radius: var(--btn-radius);
+    font-weight: bold;
+    color: var(--color-text-dark);
+    transition: var(--transition-fast);
+    padding: 0.75rem 1rem;
+}
+
+/* Modificadores */
+.card-factura .btn-custom--agua:hover {
+    background-color: var(--color-agua);
+    color: var(--color-white);
+    border-color: var(--color-agua);
+}
+
+.card-factura .btn-custom--gas:hover {
+    background-color: var(--color-gas);
+    color: var(--color-white);
+    border-color: var(--color-gas);
+}
+
+.card-factura .btn-custom--luz:hover {
+    background-color: var(--color-luz);
+    color: black;
+    border-color: var(--color-luz);
+}
+
+/* Modificadores de la Tarjeta con el JS*/
+.card-factura--active-agua {
+    border-color: var(--color-agua) !important;
+}
+
+.card-factura--active-gas {
+    border-color: var(--color-gas) !important;
+}
+
+.card-factura--active-luz {
+    border-color: var(--color-luz) !important;
+}

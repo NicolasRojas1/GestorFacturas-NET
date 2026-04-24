@@ -1,0 +1,105 @@
+﻿@model AppFacturas.Models.Gas
+
+@{
+    var (c1, c2) = Model.CalcularConsumos();
+    var (p1, p2) = Model.CalcularPorcentajes();
+    var (total1, total2) = Model.CalcularPagos();
+
+    // Calculamos el cargo fijo individual (asumiendo división equitativa)
+    decimal cargoFijoIndiv = Model.CargoFijo / 2m;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header recibo-gas-header text-center py-4">
+            <h2 class="fw-bold mb-0">🔥 RESUMEN DE FACTURACIÓN - GAS</h2>
+            <small class="text-uppercase fw-bold opacity-75">Servicio de Gas Natural Residencial</small>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <h5 class="text-secondary border-bottom pb-2">Datos del Recibo</h5>
+                    <div class="row mt-3">
+                        <div class="col-6 text-muted">Periodo Facturado:</div>
+                        <div class="col-6 fw-bold">@Model.FechaInicial.ToShortDateString() - @Model.FechaFinal.ToShortDateString()</div>
+
+                        <div class="col-6 text-muted">Total Recibo:</div>
+                        <div class="col-6 fw-bold text-dark">@Model.ValorRecibo.ToString("C0")</div>
+
+                        <div class="col-6 text-muted">Cargo Fijo (Total):</div>
+                        <div class="col-6 fw-bold text-orange">@Model.CargoFijo.ToString("C0")</div>
+                    </div>
+                </div>
+                <div class="col-md-5 text-center border-start">
+                    <span class="badge bg-orange text-white mb-2" style="background-color: #fd7e14;">METROS CÚBICOS</span>
+                    <h1 class="display-3 fw-bold recibo-consumo-gas">@Model.ConsumoTotal<small class="h4"> m³</small></h1>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="row g-4 text-center">
+                <div class="col-md-6">
+                    <div class="card border-0 bg-light shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h4 class="recibo-gas-titulo">Apartamento 1</h4>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Consumo (@p1.ToString("F1")%):</span>
+                                <span class="fw-bold">@c1 m³</span>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Consumo Gas:</span>
+                                <span>@((total1 - cargoFijoIndiv).ToString("C0"))</span>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted mb-3">
+                                <span>Cargo Fijo:</span>
+                                <span>@cargoFijoIndiv.ToString("C0")</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center recibo-gas-box">
+                                <span class="h5 mb-0 fw-bold">TOTAL</span>
+                                <span class="h3 mb-0 fw-bolder text-dark">@total1.ToString("C0")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card border-0 bg-light shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h4 class="recibo-gas-titulo">Apartamento 2</h4>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Consumo (@p2.ToString("F1")%):</span>
+                                <span class="fw-bold">@c2 m³</span>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Consumo Gas:</span>
+                                <span>@((total2 - cargoFijoIndiv).ToString("C0"))</span>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted mb-3">
+                                <span>Cargo Fijo:</span>
+                                <span>@cargoFijoIndiv.ToString("C0")</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center recibo-gas-box">
+                                <span class="h5 mb-0 fw-bold">TOTAL</span>
+                                <span class="h3 mb-0 fw-bolder text-dark">@total2.ToString("C0")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center pb-4">
+            <a asp-action="RegistroGas" class="btn btn-outline-secondary px-4 me-2">Regresar</a>
+            <button class="btn btn-warning text-white fw-bold px-4" style="background-color: #fd7e14; border: none;" onclick="window.print()">
+                Imprimir PDF
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Panel de Control";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg card-factura border-0" id="portalCard">
+
+        <div class="card-factura__header text-white text-center" id="cardHeader">
+            <div id="headerIcon">
+                <i class="fas fa-file-invoice-dollar fa-4x mb-3 animate__animated"></i>
+            </div>
+            <h2 class="fw-bold mt-2">App Facturas</h2>
+            <p class="opacity-75">Selecciona un servicio para comenzar</p>
+        </div>
+
+        <div class="card-body p-4 text-center">
+            <h4 class="text-dark mb-4">¿Qué recibo vamos a procesar hoy?</h4>
+
+            <div class="d-grid gap-3">
+                <a asp-controller="Home" asp-action="RegistroAgua"
+                   class="btn btn-custom btn-custom--agua py-3"
+                   onmouseover="updateCard('agua')" onmouseout="resetCard()">
+                    <i class="fas fa-faucet me-2"></i> Agua
+                </a>
+
+                <a asp-controller="Home" asp-action="RegistroGas"
+                   class="btn btn-custom btn-custom--gas py-3"
+                   onmouseover="updateCard('gas')" onmouseout="resetCard()">
+                    <i class="fas fa-fire me-2"></i> Gas
+                </a>
+
+                <a asp-controller="Home" asp-action="RegistroLuz"
+                   class="btn btn-custom btn-custom--luz py-3"
+                   onmouseover="updateCard('luz')" onmouseout="resetCard()">
+                    <i class="fas fa-lightbulb me-2"></i> Luz
+                </a>
+            </div>
+        </div>
+
+        <div class="card-footer text-muted text-center border-0 bg-white pb-4">
+            Sistema de Gestión de Recibos
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/home.js"></script>
+}
