@@ -22,6 +22,16 @@ public class Luz : Factura
     [DataType(DataType.Currency)]
     public decimal ValorAseo { get; set; }
     public int ConsumoTotal => LecturaFinalRecibo - LecturaInicialRecibo;
+    public int ConsumoApto1 { get; set; }
+    public int ConsumoApto2 { get; set; }
+    public decimal PorcentajeApto1 { get; set; }
+    public decimal PorcentajeApto2 { get; set; }
+    public decimal AseoPorApto => ValorAseo / 2m;
+    public decimal SubTotalLuz => ValorRecibo - ValorAseo;
+    public decimal ValorLuzApto1 { get; set; }
+    public decimal ValorLuzApto2 { get; set; }
+    public decimal TotalApto1 { get; set; }
+    public decimal TotalApto2 { get; set; }
 
     public Luz() { }
 
@@ -48,56 +58,50 @@ public class Luz : Factura
             );
         }
     }
-
-    public (int c1, int c2) CalcularConsumos()
+    protected void CalcularConsumos()
     {
-        int consumo1 = ConsumoFinal - ConsumoInicial;
-        int consumo2 = ConsumoTotal - consumo1;
-        return (consumo1, consumo2);
+        this.ConsumoApto1 = ConsumoFinal - ConsumoInicial;
+        this.ConsumoApto2 = ConsumoTotal - this.ConsumoApto1;
     }
 
-    public (decimal p1, decimal p2) CalcularPorcentajes()
+    protected void CalcularPorcentajes()
     {
-        if (ConsumoTotal == 0) return (0m, 0m);
-
-        decimal total = ConsumoTotal;
-        var consumos = CalcularConsumos();
-
-        decimal porcentaje1 = (consumos.c1 / total) * 100m;
-        decimal porcentaje2 = (consumos.c2 / total) * 100m;
-
-        return (porcentaje1, porcentaje2);
+        if (ConsumoTotal == 0)
+        {
+            this.PorcentajeApto1 = 50;
+            this.PorcentajeApto2 = 50;
+            return;
+        }
+        this.PorcentajeApto1 = (decimal)this.ConsumoApto1 / (decimal)ConsumoTotal * 100m;
+        this.PorcentajeApto2 = (decimal)this.ConsumoApto2 / (decimal)ConsumoTotal * 100m;
     }
-
-    public decimal CalcularAseo()
+    protected void CalcularPagos() // Cambiado a protected
     {
-        return ValorAseo / 2m;
-    }
-    public (decimal luz1, decimal luz2, decimal aseo, decimal total1, decimal total2, decimal totalLuz) CalcularPagos()
-    {
-        var aseoIndiv = CalcularAseo();
-        decimal valorLuz = ValorRecibo - ValorAseo;
-        decimal l1 = 0m, l2 = 0m;
-        decimal totalLuz = 0m;
-   
-
         if (ConsumoTotal > 0)
         {
-            var porcentajes = CalcularPorcentajes();
-            l1 = Math.Round((porcentajes.p1 / 100m) * valorLuz, 0);
-            l2 = Math.Round((porcentajes.p2 / 100m) * valorLuz, 0);
-            totalLuz = l1 + l2;
+            this.ValorLuzApto1 = Math.Round(this.PorcentajeApto1 / 100m * this.SubTotalLuz, 0);
+            // El segundo es la diferencia para que no se pierda ni un peso por redondeo
+            this.ValorLuzApto2 = this.SubTotalLuz - this.ValorLuzApto1;
+
+            this.TotalApto1 = this.ValorLuzApto1 + this.AseoPorApto;
+            this.TotalApto2 = this.ValorLuzApto2 + this.AseoPorApto;
+            return;
         }
-        return (l1, l2, aseoIndiv, l1 + aseoIndiv, l2 + aseoIndiv, totalLuz);
+        // Si no hay consumo, cada uno paga su mitad de aseo
+        this.ValorLuzApto1 = 0;
+        this.ValorLuzApto2 = 0;
+        this.TotalApto1 = this.AseoPorApto;
+        this.TotalApto2 = this.AseoPorApto;
+    }
+    public void ProcesarFactura()
+    {
+        CalcularConsumos();
+        CalcularPorcentajes();
+        CalcularPagos();
     }
 
-    public override string ObtenerReporte()
+    protected override string ObtenerReporte()
     {
-        var (c1, c2) = CalcularConsumos();
-        var (p1, p2) = CalcularPorcentajes();
-        var (l1, l2, aseoIndiv, total1, total2, totalLuz) = CalcularPagos();
-        var aseo = CalcularAseo();
-
         return $@"------ Esta es la informacion de tu recibo de la luz: ------
 Valor Total del Recibo: {ValorRecibo:C}
 Valor Total del Aseo: {ValorAseo:C}
@@ -105,13 +109,13 @@ Valor Total del Aseo: {ValorAseo:C}
 Lectura Anterior del Contador: {ConsumoInicial}
 Lectura Actual del Contador: {ConsumoFinal}
 Valor Kw del Recibo: {ValorKw:C0}
-Total Aseo Por Apartamento: {aseo:C0}
+Total Aseo Por Apartamento: {AseoPorApto:C0}
 Total Kw Consumidos Durante el Mes: {ConsumoTotal}
 
-Apto 1 Consumo: {c1} kw | Porcentaje: {p1:F2}%
-Apto 2 Consumo: {c2} kw | Porcentaje: {p2:F2}%
+Apto 1 Consumo: {ConsumoApto1} kw | Porcentaje: {PorcentajeApto1:F2}%
+Apto 2 Consumo: {ConsumoApto2} kw | Porcentaje: {PorcentajeApto2:F2}%
 
-Apto 1 Pago: {total1:C0}
-Apto 2 Pago: {total2:C0}";
+Apto 1 Pago: {TotalApto1:C0}
+Apto 2 Pago: {TotalApto2:C0}";
     }
 }

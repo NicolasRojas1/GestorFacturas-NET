@@ -82,8 +82,8 @@ public class Gas : Factura
             this.TotalApto2 = Math.Round(this.CargoPorApto, 0);
             return;
         }
-        this.TotalApto1 = Math.Round((this.PorcentajeApto1 / 100 * this.ValorConsumoNeto) + this.CargoPorApto, 0);
-        this.TotalApto2 = Math.Round((this.PorcentajeApto2 / 100 * this.ValorConsumoNeto) + this.CargoPorApto, 0);
+        this.TotalApto1 = Math.Round((this.PorcentajeApto1 / 100m * this.ValorConsumoNeto) + this.CargoPorApto, 0);
+        this.TotalApto2 = Math.Round((this.PorcentajeApto2 / 100m * this.ValorConsumoNeto) + this.CargoPorApto, 0);
     }
 
     public void ProcesarFactura()

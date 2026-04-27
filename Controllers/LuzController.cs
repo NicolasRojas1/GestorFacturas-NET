@@ -17,6 +17,7 @@ namespace AppFacturas.Controllers
             {
                 return View("Registro", recibo);
             }
+            recibo.ProcesarFactura();
             return View(recibo);
         }
     }

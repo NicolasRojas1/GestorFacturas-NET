@@ -18,7 +18,7 @@ namespace AppFacturas.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("Registro", recibo);
+                return View("Registro", recibo); //Si hay error hasta aqui llega
             }
             recibo.ProcesarFactura();
             return View(recibo); // Al no poner nombre, busca 'Resultado.cshtml' dentro de Views/Gas/

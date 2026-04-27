@@ -66,7 +66,7 @@ public class Agua : Factura
         return valorDelServicio / consumoRecibo; 
     }
 
-    public override string ObtenerReporte()
+    protected override string ObtenerReporte()
     {
         // Valores unitarios
         decimal vUnitAcueducto = CalcularMetroPorConcepto(ValorAcueducto);
