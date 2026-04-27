@@ -17,8 +17,18 @@ public class Gas : Factura
     [DataType(DataType.Currency)]
     public decimal CargoFijo { get; set; }
     public int ConsumoTotal => LecturaFinalRecibo - LecturaInicialRecibo;
+    public int ConsumoApto1 { get; set; }
+    public int ConsumoApto2 { get; set; }
+    public decimal PorcentajeApto1 { get; set; }
+    public decimal PorcentajeApto2 { get; set; }
+    public decimal CargoPorApto => CargoFijo / 2m;
+    public decimal ValorConsumoNeto => ValorRecibo - CargoFijo; // Calculo sin el cargo fijo                               
+    public decimal TotalApto1 { get; set; }
+    public decimal TotalApto2 { get; set; }
+    public decimal ValorConsumoApto1 => TotalApto1 - CargoPorApto; // Lo que paga el apto 1 solo por lo que consumió 
+    public decimal ValorConsumoApto2 => TotalApto2 - CargoPorApto; // Lo que paga el apto 2 solo por lo que consumió 
 
-    public Gas() {}
+    public Gas() { }
 
     public Gas(decimal valorRecibo, int lecturaInicialRecibo, int lecturaFinalRecibo, DateTime fechaInicial, DateTime fechaFinal, int consumoInicial, int consumoFinal, decimal cargoFijo)
     : base(valorRecibo, lecturaInicialRecibo, lecturaFinalRecibo, fechaInicial, fechaFinal)
@@ -45,54 +55,47 @@ public class Gas : Factura
             );
         }
     }
-
-    public (int c1, int c2) CalcularConsumos()
+    protected void CalcularConsumos()
     {
-        int consumo1 = ConsumoFinal - ConsumoInicial;
-        int consumo2 = ConsumoTotal - consumo1;
-        return (consumo1, consumo2);
+        this.ConsumoApto1 = ConsumoFinal - ConsumoInicial;
+        this.ConsumoApto2 = ConsumoTotal - this.ConsumoApto1;
     }
 
-    public (decimal v1, decimal v2) CalcularPorcentajes()
+    protected void CalcularPorcentajes()
     {
         if (ConsumoTotal == 0)
         {
-            return (50, 50);
+            this.PorcentajeApto1 = 50;
+            this.PorcentajeApto2 = 50;
+            return;
         }
-        var consumos = CalcularConsumos();
-        decimal consumo1 = consumos.c1;
-        decimal consumo2 = consumos.c2;
-        decimal porcentaje1 = consumo1 / ConsumoTotal * 100m;
-        decimal porcentaje2 = consumo2 / ConsumoTotal * 100m;
-        return (porcentaje1, porcentaje2);
+        this.PorcentajeApto1 = (decimal)this.ConsumoApto1 / (decimal)ConsumoTotal * 100m;
+        this.PorcentajeApto2 = (decimal)this.ConsumoApto2 / (decimal)ConsumoTotal * 100m;
     }
 
-    public (decimal total1, decimal total2) CalcularPagos()
+    protected void CalcularPagos()
     {
-        var porcentajes = CalcularPorcentajes();
-        decimal cargoPorApto = CargoFijo / 2m;
-
-        decimal consumoVariableTotal = ValorRecibo - CargoFijo;
-
-        if (porcentajes.v1 == 0 && porcentajes.v2 == 0)
+        // Escenario A: Nadie usó gas, solo se divide el cargo fijo
+        if (this.ConsumoApto1 == 0 && this.ConsumoApto2 == 0)
         {
-            return (Math.Round(cargoPorApto, 0), Math.Round(cargoPorApto, 0));
+            this.TotalApto1 = Math.Round(this.CargoPorApto, 0);
+            this.TotalApto2 = Math.Round(this.CargoPorApto, 0);
+            return;
         }
-
-        decimal pagoVariable1 = (porcentajes.v1 / 100) * consumoVariableTotal;
-        decimal pagoVariable2 = (porcentajes.v2 / 100) * consumoVariableTotal;
-
-        decimal total1 = cargoPorApto + pagoVariable1;
-        decimal total2 = cargoPorApto + pagoVariable2;
-
-        return (Math.Round(total1, 0), Math.Round(total2, 0));
+        this.TotalApto1 = Math.Round((this.PorcentajeApto1 / 100 * this.ValorConsumoNeto) + this.CargoPorApto, 0);
+        this.TotalApto2 = Math.Round((this.PorcentajeApto2 / 100 * this.ValorConsumoNeto) + this.CargoPorApto, 0);
     }
-    public override string ObtenerReporte()
-    {
-        var (c1, c2) = CalcularConsumos();
-        var (p1, p2) = CalcularPorcentajes();
-        var (total1, total2) = CalcularPagos();
 
+    public void ProcesarFactura()
+    {
+        CalcularConsumos();
+        CalcularPorcentajes();
+        CalcularPagos();
+    }
+
+    protected override string ObtenerReporte()
+    {
+        // Usamos los nombres reales de tus propiedades
         return $@"
 ==================================================
       🔥 REPORTE DE CONSUMO DE GAS 🔥
@@ -110,12 +113,12 @@ Lectura Medidor:{ConsumoInicial} m3 - {ConsumoFinal} m3
 [ DISTRIBUCIÓN POR APARTAMENTO ]
 --------------------------------------------------
 APTO 1:
-   Consumo:      {c1} m3 ({p1:F1}%)
-   VALOR A PAGAR: {total1:C0}
+   Consumo:      {ConsumoApto1} m3 ({PorcentajeApto1:F1}%)
+   VALOR A PAGAR: {TotalApto1:C0}
 
 APTO 2:
-   Consumo:      {c2} m3 ({p2:F1}%)
-   VALOR A PAGAR: {total2:C0}
+   Consumo:      {ConsumoApto2} m3 ({PorcentajeApto2:F1}%)
+   VALOR A PAGAR: {TotalApto2:C0}
 --------------------------------------------------
     *Cálculos basados en el consumo real del medidor*
 ==================================================";

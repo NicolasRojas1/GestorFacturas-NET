@@ -55,12 +55,12 @@ public abstract class Factura : IValidatableObject
         }
     }
 
-    public virtual string ObtenerReporte()
+    protected virtual string ObtenerReporte()
     {
         return $"Factura General - Valor: {ValorRecibo:C0}";
     }
 
-    public virtual void ShowInfo()
+    protected virtual void ShowInfo()
     {
         Console.WriteLine(ObtenerReporte());
     }

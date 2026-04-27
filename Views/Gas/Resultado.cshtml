@@ -1,14 +1,5 @@
 ﻿@model AppFacturas.Models.Gas
 
-@{
-    var (c1, c2) = Model.CalcularConsumos();
-    var (p1, p2) = Model.CalcularPorcentajes();
-    var (total1, total2) = Model.CalcularPagos();
-
-    // Calculamos el cargo fijo individual (asumiendo división equitativa)
-    decimal cargoFijoIndiv = Model.CargoFijo / 2m;
-}
-
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
 
@@ -47,21 +38,21 @@
                             <h4 class="recibo-gas-titulo">Apartamento 1</h4>
 
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Consumo (@p1.ToString("F1")%):</span>
-                                <span class="fw-bold">@c1 m³</span>
+                                <span class="text-muted">Consumo (@Model.PorcentajeApto1.ToString("F1")%):</span>
+                                <span class="fw-bold">@Model.ConsumoApto1 m³</span>
                             </div>
                             <div class="d-flex justify-content-between small text-muted mb-1">
                                 <span>Consumo Gas:</span>
-                                <span>@((total1 - cargoFijoIndiv).ToString("C0"))</span>
+                                <span>@Model.ValorConsumoApto1.ToString("C0"))</span>
                             </div>
                             <div class="d-flex justify-content-between small text-muted mb-3">
                                 <span>Cargo Fijo:</span>
-                                <span>@cargoFijoIndiv.ToString("C0")</span>
+                                <span>@Model.CargoPorApto.ToString("C0")</span>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center recibo-gas-box">
                                 <span class="h5 mb-0 fw-bold">TOTAL</span>
-                                <span class="h3 mb-0 fw-bolder text-dark">@total1.ToString("C0")</span>
+                                <span class="h3 mb-0 fw-bolder text-dark">@Model.TotalApto1.ToString("C0")</span>
                             </div>
                         </div>
                     </div>
@@ -73,21 +64,21 @@
                             <h4 class="recibo-gas-titulo">Apartamento 2</h4>
 
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Consumo (@p2.ToString("F1")%):</span>
-                                <span class="fw-bold">@c2 m³</span>
+                                <span class="text-muted">Consumo (@Model.PorcentajeApto2.ToString("F1")%):</span>
+                                <span class="fw-bold">@Model.ConsumoApto2 m³</span>
                             </div>
                             <div class="d-flex justify-content-between small text-muted mb-1">
                                 <span>Consumo Gas:</span>
-                                <span>@((total2 - cargoFijoIndiv).ToString("C0"))</span>
+                                <span>@(Model.ValorConsumoApto2.ToString("C0"))</span>
                             </div>
                             <div class="d-flex justify-content-between small text-muted mb-3">
                                 <span>Cargo Fijo:</span>
-                                <span>@cargoFijoIndiv.ToString("C0")</span>
+                                <span>@Model.CargoPorApto.ToString("C0")</span>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center recibo-gas-box">
                                 <span class="h5 mb-0 fw-bold">TOTAL</span>
-                                <span class="h3 mb-0 fw-bolder text-dark">@total2.ToString("C0")</span>
+                                <span class="h3 mb-0 fw-bolder text-dark">@Model.TotalApto2.ToString("C0")</span>
                             </div>
                         </div>
                     </div>

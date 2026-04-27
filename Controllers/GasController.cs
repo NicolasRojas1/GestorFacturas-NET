@@ -20,6 +20,7 @@ namespace AppFacturas.Controllers
             {
                 return View("Registro", recibo);
             }
+            recibo.ProcesarFactura();
             return View(recibo); // Al no poner nombre, busca 'Resultado.cshtml' dentro de Views/Gas/
         }
     }
